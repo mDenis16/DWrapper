@@ -1,4 +1,4 @@
-﻿using Test.Example;
+﻿/*using Test.Example;
 using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -29,8 +29,7 @@ namespace Tests
             {
                 var User = engine.Users.Select(new {Id = 5});
 
-                if (User == null)
-                    Assert.Fail("Couldn't find user.");
+                User.FirstOrDefault().Characters.
 
                 Console.WriteLine("Worked");
             }
@@ -43,6 +42,30 @@ namespace Tests
             {
                engine.Users.Delete(new { Id = 5 });
 
+            }
+        }
+    }
+}
+*/
+using Test.Example;
+namespace Tests
+{
+    public static class Samp
+    {
+
+        public static void Main()
+        {
+            using (ExampleEngine engine = new ExampleEngine())
+            {
+                var User = engine.Users.Select(new { Id = 1 }).FirstOrDefault();
+
+                if (User != null)
+                {
+                    var characters = User.Characters.SelectAll();
+                    Console.WriteLine(characters);
+                }
+
+               // Console.WriteLine(User.FirstOrDefault().Characters._TableName);
             }
         }
     }

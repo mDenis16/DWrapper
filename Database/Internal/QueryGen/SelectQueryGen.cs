@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DWrapper.Database.Collections
 {
-    public partial class DBCollection<TDBEntity>
+    public partial class DBTable<TDBEntity>
     {
         public Dictionary<int, string?> ParamHashOld = new Dictionary<int, string?>();
         public StringBuilder SelectQueryGen(object param, string? limit = null)

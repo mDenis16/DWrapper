@@ -8,25 +8,23 @@ using Dapper;
 using MySqlConnector;
 
 
+
 namespace DWrapper.Database.Collections
 {
-    public partial class DBCollection<TDBEntity>
+    public partial class DBTable<TDBEntity>
     {
-        public async Task AddAsync(DBEntity? ent)
+        public async Task DeleteAsync(DBEntity? ent, object param = null)
         {
             if (ent == null) throw new InvalidDataException("DBEntity is null");
             if (_Engine == null) throw new InvalidOperationException("DBEngine is null");
-            if (InsertQuery == null) throw new InvalidOperationException("InsertQuery is null");
+            if (DeleteQuery == null) throw new InvalidOperationException("DeleteQuery is null");
 
-            SyncedProperties.ForEach(prop =>
-            {
-                ParametersForInsertion[prop.Name] = prop.GetValue(ent, null);
-            });
+            StringBuilder stringBuilder = new StringBuilder(DeleteQuery);
+            stringBuilder.Append(WhereQueryGen(param));
 
             using (MySqlConnection db = new MySqlConnection(_Engine.ConnectionString))
-               ent.Id = await _Engine.Connection.ExecuteScalarAsync<int>(InsertQuery, ParametersForInsertion);
+                await db.ExecuteAsync(DeleteQuery, param);
 
         }
-
     }
 }

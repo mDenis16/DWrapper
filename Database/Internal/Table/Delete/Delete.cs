@@ -9,7 +9,7 @@ using Dapper;
 
 namespace DWrapper.Database.Collections
 {
-    public partial class DBCollection<TDBEntity>
+    public partial class DBTable<TDBEntity>
     {
         public void Delete(object param = null)
         {

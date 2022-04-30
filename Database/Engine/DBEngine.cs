@@ -22,6 +22,7 @@ namespace DWrapper.Database.Engine
 
         private bool HasCalledInternalConfigure { get; set; }
 
+        public Dictionary<int, object> Instances = new Dictionary<int, object>();
 
         public virtual void OnConfigure()
         {
@@ -31,12 +32,13 @@ namespace DWrapper.Database.Engine
             
             Type type = this.GetType();
 
-            var searched = typeof(DBCollection<DBEngine>);
+            var searched = typeof(DBTable<>);
 
             foreach (var prop in type.GetRuntimeProperties())
             {
+                //Console.WriteLine(prop.PropertyType);
                 if (prop.PropertyType.Name == searched.Name)
-                    prop.SetValue(this, Activator.CreateInstance(prop.PropertyType, this));
+                   prop.SetValue(this, Activator.CreateInstance(prop.PropertyType, this, false)); 
             }
 
 

@@ -11,7 +11,7 @@ using MySqlConnector;
 
 namespace DWrapper.Database.Collections
 {
-    public partial class DBCollection<TDBEntity>
+    public partial class DBTable<TDBEntity>
     {
         public async Task<IEnumerable<TDBEntity>> SelectAsync(object _params, string? limit = null)
         {

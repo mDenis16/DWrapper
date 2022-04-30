@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace DWrapper.Database.Collections
 {
 
-    public partial class DBCollection<TDBEntity>
+    public partial class DBTable<TDBEntity>
     {
         private void GenerateInsertQuery()
         {

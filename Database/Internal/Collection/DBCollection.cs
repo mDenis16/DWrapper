@@ -20,6 +20,7 @@ namespace DWrapper.Database.Collections
         private IDictionary<string, object> ParametersForInsertion = new Dictionary<string, object>();
 
         private DBEngine? _Engine = null;
+
         private List<PropertyInfo> SyncedProperties = new List<PropertyInfo>();
 
         private String? InsertQuery { get; set; }
@@ -27,54 +28,48 @@ namespace DWrapper.Database.Collections
 
         private String? SelectQuery { get; set; }
 
-      
-        public void SetDbEngine(DBEngine? Engine)
-        {
-            _Engine = Engine;
+        public bool OneToMany { get; set; }
 
-            Console.WriteLine("DB engine has been set");
-        }
-        public DBCollection(DBEngine eng)
+        public DBCollection(DBEngine eng, bool _OneToMany = false)
         {
 
             _Engine = eng;
 
-            CheckForSyncedProperties();
             RetrieveTableName();
-            GenerateInsertQuery();
-            GenerateDeleteQuery();
-            GenerateSelectQuery();
-            ConstructQueryParameters();
 
-            
+
+
+            OneToMany = _OneToMany;
+
+            Console.WriteLine("Created a db DBCollection");
+            Console.WriteLine("One to many status " + OneToMany);
 
         }
-
-        private void ConstructQueryParameters()
+        public IEnumerable<DBEntity> SelectAll()
         {
-            SyncedProperties.ForEach(prop =>
-            {
-                ParametersForInsertion.Add(prop.Name, 0);
-            });  
+            if (_Engine == null) throw new InvalidOperationException("DBEngine is null");
+
+            return _Engine.Connection.Query<DBEntity>("SELECT * FROM Characters WHERE ParentId = 5");
         }
+
         private void RetrieveTableName()
         {
             if (_TableName != null) return;
 
             Type type = typeof(TDBEntity);
-        
 
-            TableAttribute? TableAttr =  type.GetCustomAttribute<TableAttribute>();
+
+            TableAttribute? TableAttr = type.GetCustomAttribute<TableAttribute>();
 
             if (TableAttr == null)
-                throw new ArgumentException("MissingExpectedAttribute for class " + type.Name , type.Name);
+                throw new ArgumentException("MissingExpectedAttribute for class " + type.Name, type.Name);
 
             _TableName = TableAttr.TableName;
         }
 
 
 
-        
-       
+
+
     }
 }

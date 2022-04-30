@@ -14,28 +14,55 @@ using DWrapper.Database.Entities;
 namespace DWrapper.Database.Collections
 {
 
-    public partial class DBCollection<TDBEntity>
+    public partial class DBTable<TDBEntity>
     {
+        
+        private void CheckForAnotherCollection()
+        {
+            Type type = typeof(TDBEntity);
+            foreach (var prop in type.GetRuntimeProperties())
+            {
+                if (typeof(DBCollection<>).Name == prop.PropertyType.Name)
+                {
+                    Console.WriteLine("Found Collection prop " + prop.GetHashCode());
+
+                    CollectionExtensions.Collections[prop.GetHashCode()] = prop;
+
+
+                    CollectionExtensions.CollectionsInstances[prop.GetHashCode()] =  Activator.CreateInstance(prop.PropertyType, _Engine, true);
+
+
+
+                    // prop.SetValue(this, inst);
+
+                    // prop.SetValue(prop, new DBTable<>);
+                }
+            }
+
+        }
         private void CheckForSyncedProperties()
         {
             if (SyncedProperties.Count == 0)
             {
+                CheckForAnotherCollection();
+
                 Type type = typeof(TDBEntity);
 
                 List<PropertyInfo> properties = new List<PropertyInfo>();
 
+
                 foreach (var prop in type.GetProperties())
                 {
 
-                   // Action<prop.PropertyType> setter = (Action<prop.PropertyType>)Delegate.CreateDelegate(typeof(Action<prop.PropertyType>), null, prop.GetSetMethod());
+                
 
-                    //Console.WriteLine(setter);
-
+                    Console.WriteLine(prop.PropertyType.Name);
                     object[] attrs = prop.GetCustomAttributes(true);
+
 
                     if (attrs.Length == 0)
                     {
-                        Console.WriteLine("Found syncable prop " + prop.Name);
+
                         SyncedProperties.Add(prop);
                     }
                     else
@@ -48,10 +75,8 @@ namespace DWrapper.Database.Collections
                         }
                     }
 
-
                 }
             }
         }
-
     }
 }

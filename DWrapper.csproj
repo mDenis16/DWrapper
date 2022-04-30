@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Test.Example\**" />
+    <EmbeddedResource Remove="Test.Example\**" />
+    <None Remove="Test.Example\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="MySqlConnector" Version="2.1.8" />
   </ItemGroup>

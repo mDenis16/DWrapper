@@ -5,13 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using DWrapper.Database.Entities;
 using Dapper;
+using MySqlConnector;
 
 
 namespace DWrapper.Database.Collections
 {
-    public partial class DBCollection<TDBEntity>
+    public partial class DBTable<TDBEntity>
     {
-        public void Add(DBEntity? ent)
+        public async Task AddAsync(DBEntity? ent)
         {
             if (ent == null) throw new InvalidDataException("DBEntity is null");
             if (_Engine == null) throw new InvalidOperationException("DBEngine is null");
@@ -22,7 +23,10 @@ namespace DWrapper.Database.Collections
                 ParametersForInsertion[prop.Name] = prop.GetValue(ent, null);
             });
 
-            ent.Id = _Engine.Connection.ExecuteScalar<int>(InsertQuery, ParametersForInsertion);
+            using (MySqlConnection db = new MySqlConnection(_Engine.ConnectionString))
+               ent.Id = await _Engine.Connection.ExecuteScalarAsync<int>(InsertQuery, ParametersForInsertion);
+
         }
+
     }
 }

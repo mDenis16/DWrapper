@@ -16,7 +16,7 @@ namespace Test.Example
     public class ExampleEngine : DBEngine
     {
     
-        public DBCollection<UserAccount> Users { get; set; }
+        public DBTable<UserAccount> Users { get; set; }
 
 
         public override void OnConfigure()
